@@ -1,35 +1,65 @@
-This is an attempt by 5 dudes with no prior knowledge about anything related to AI to create a working game in which the boss adapts to the user's playstyle after each game and plays accordingly.
+# Adapt or Perish — Control Shift Intelligence
 
-Imagine playing a game where the boss is like Maharoga and it levels up just like in Solo Levelling. It is a topdown type game which engages the user to fight the boss.
+A top-down boss-fight game where the boss **learns from your playstyle** and adapts its strategy after every battle. Built with Godot Engine and powered by an AI pipeline using Mira Flows and the ChatGPT API.
 
-AI Adaptation System
+> Developed as a team project at IIT (BHU) Varanasi by Shreyas Pol, Akash Kumar, Prabhav Sunia, Divye Nayyar, and Kapish Gupta.
 
-After each fight, a Python script runs through Mira Flows to analyze the player's behavior and adjust the Boss's action probabilities accordingly.
-The AI updates the probabilities to make the boss better suited for the player's playstyle.
+---
 
-Example Working of Project:
-First Fight:
-Initially, the boss probabilities were as follows:
-	var actions = { State.MELEE : 25, State.RANGED : 25, State.BLOCKED : 25, State.TACKLE : 25 }
-	
-The player is aggressive and stays close to the boss, frequently using melee attacks.
-After the fight, the AI increases the probability of the Boss using melee to counter the player's style and reduces probability of ranged attacks due to proximity.
+## How It Works
 
-After the fight boss probabilities were updated as follows:
-    var actions = { State.MELEE : 50, State.RANGED : 10, State.BLOCKED : 20, State.TACKLE : 20 }
+The game features a single boss — **Mahoraga** — with five possible actions:
 
+| Action | Description |
+|--------|-------------|
+| Melee | Close-range attack |
+| Ranged | Projectile attack from a distance |
+| Block | Deflects incoming player attacks |
+| Chase | Aggressively pursues the player |
+| Tackle | High-damage charge attack |
 
-Future Improvements
+Each action has an associated probability weight. Initially all weights are equal:
 
-	More complex AI learning algorithms.
+```gdscript
+var actions = { State.MELEE: 25, State.RANGED: 25, State.BLOCKED: 25, State.TACKLE: 25 }
+```
 
-    Different boss types with unique fighting styles.
+After each fight, the AI pipeline analyzes the player's behavior and updates these weights to counter their playstyle. For example, if the player tends to fight up close, Mahoraga will increase its melee and tackle probabilities in the next round.
 
-	Enhanced difficulty scaling based on multiple fight history.
+---
 
-This project showcases adaptive AI in game design, making each fight unique based on the player's approach.
+## AI Pipeline
 
-The 5 dudes who worked on this:
+The adaptation system runs through **Mira Flows** as the orchestration layer:
 
- Mr-excaliver, BruhGamer05, d1vy3, theb1gf00t,  K-1809
+```
+Player fight data (attack patterns, positioning)
+        ↓
+   Mira Flows fetches and structures the data
+        ↓
+   ChatGPT API analyzes patterns and generates updated probabilities
+        ↓
+   Mira Flows sends updated boss config back to Godot
+```
 
+---
+
+## Tech Stack
+
+- **Godot Engine** — Game engine (GDScript)
+- **Mira Flows** — AI workflow orchestration and middleware
+- **ChatGPT API (OpenAI)** — Player behavior analysis and boss strategy generation
+- **Python** — Glue scripts for data handling between Godot and Mira
+
+---
+
+## Project Structure
+
+```
+ControlShiftIntelligence/
+├── src/          # Godot game source (GDScript)
+├── ai/           # Python scripts for Mira Flows integration and AI pipeline
+└── README.md
+```
+
+---
